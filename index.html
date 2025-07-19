@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Military Spending Comparison</title>
+
+    <!-- D3.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+  </head>
+  <body>
+
+    <h1>How Much Do Countries Spend on Their Military?</h1>
+
+    <p>
+      In 2024, the United States spent approximately <strong>$997 billion</strong> on its military.  
+      Russia followed with around <strong>$149 billion</strong>, while Italy spent around <strong>$35.5 billion</strong> (latest available, 2023).
+    </p>
+
+    <p>
+      This means:
+      <br />
+      <strong>USA / Italy = ~28×</strong><br />
+      <strong>Russia / Italy = ~4.2×</strong>
+    </p>
+
+    <div id="military-chart"></div>
+
+    <script>
+      // Step 1. Data (in billions USD)
+      const usa = 997;
+      const russia = 149;
+      const italy = 35.5;
+
+      const spendingData = [usa, russia, italy];
+      const labels = ['USA', 'Russia', 'Italy'];
+
+      // Step 2. Create scale
+      const scaleRadius = d3.scaleSqrt()
+        .domain([0, d3.max(spendingData)])
+        .range([0, 100]);
+
+      // Step 3. Create SVG container
+      const svg = d3
+        .select('#military-chart')
+        .append('svg')
+        .attr('width', 700)
+        .attr('height', 500);
+
+      // Step 4. Title in chart
+      svg.append('text')
+        .attr('x', 350)
+        .attr('y', 40)
+        .attr('text-anchor', 'middle')
+        .text('Military Spending (in proportion)')
+        .style('font-size', '18px')
+        .style('font-family', 'sans-serif')
+        .style('font-weight', 'bold');
+
+      // Step 5. Draw circles
+      svg.selectAll('circle')
+        .data(spendingData)
+        .join('circle')
+        .attr('cx', (d, i) => 150 + i * 200)
+        .attr('cy', 250)
+        .attr('r', d => Math.max(scaleRadius(d), 5))
+        .style('fill', (d, i) => ['#1f77b4', '#ff7f0e', '#2ca02c'][i]);
+
+      // Step 6. Labels under circles
+      svg.selectAll('text.labels')
+        .data(labels)
+        .join('text')
+        .attr('class', 'labels')
+        .attr('x', (d, i) => 150 + i * 200)
+        .attr('y', 400)
+        .attr('text-anchor', 'middle')
+        .text(d => d)
+        .style('font-family', 'sans-serif')
+        .style('font-size', '16px');
+
+      // Step 7. Show spending value above each circle
+      svg.selectAll('text.values')
+        .data(spendingData)
+        .join('text')
+        .attr('class', 'values')
+        .attr('x', (d, i) => 150 + i * 200)
+        .attr('y', 200)
+        .attr('text-anchor', 'middle')
+        .text(d => `$${d}B`)
+        .style('font-family', 'sans-serif')
+        .style('font-size', '14px');
+    </script>
+
+  </body>
+</html>
